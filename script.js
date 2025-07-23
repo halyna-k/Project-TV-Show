@@ -34,6 +34,26 @@ function createEpisodeContainer() {
 
   return container;
 }
+// Template for episode cards
+const template = document.getElementById("episode-card-template");
+
+// Function to create the episode card
+function createEpisodeCard(episode) {
+  const episodeCard = template.content.cloneNode(true);
+
+  const episodeTitle = episodeCard.querySelector("h2 a");
+  episodeTitle.textContent = `${episode.name} - S${episode.season}E${episode.number}`;
+  episodeTitle.href = `${episode.url}`;
+
+  const episodeImage = episodeCard.querySelector("img");
+  episodeImage.src = episode.image ? episode.image.medium : "";
+  episodeImage.alt = episode.name;
+
+  const episodeSummary = episodeCard.querySelector("[data-summary]");
+  episodeSummary.textContent = episode.summary.replace(/<[^>]+>/g, "");
+
+  return episodeCard;
+};
 
 function makePageForEpisodes(episodeList) {
   const mainElem = document.querySelector("main");
@@ -42,7 +62,7 @@ function makePageForEpisodes(episodeList) {
   mainElem.prepend(countText);
 
   const episodeContainer = createEpisodeContainer();
-  // render episode cards inside the episode container
+  episodeContainer.append(...episodeList.map(createEpisodeCard));
 }
 
 window.onload = setup;
