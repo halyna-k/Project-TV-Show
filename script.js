@@ -3,6 +3,7 @@ function setup() {
   const allEpisodes = getAllEpisodes();
   createMain();
   makePageForEpisodes(allEpisodes);
+  footer();
 }
 
 // Creates the main element and appends it to the root element
@@ -61,6 +62,17 @@ function createEpisodeCard(episode) {
 
   return episodeCard;
 };
+
+// Function to create the footer
+function footer() {
+  const footerElem = document.createElement("footer");
+  footerElem.innerHTML = `
+  <p>Created by <a href="https://github.com/halyna-k" target="_blank" rel="noopener noreferrer">Halyna</a></p>
+  <p>Data originally from <a href="https://tvmaze.com/" target="_blank" rel="noopener noreferrer">TVMaze.com</a></p>
+`;
+  const rootElem = document.getElementById("root");
+  rootElem.appendChild(footerElem);
+}
 
 function makePageForEpisodes(episodeList) {
   const mainElem = document.querySelector("main");
