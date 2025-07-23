@@ -34,6 +34,13 @@ function createEpisodeContainer() {
 
   return container;
 }
+
+// Function to pad numbers with leading zeros
+const pad = (n) => {
+  if (typeof n !== "number" || isNaN(n)) return "00";
+  return n.toString().padStart(2, "0");
+};
+
 // Template for episode cards
 const template = document.getElementById("episode-card-template");
 
@@ -42,7 +49,7 @@ function createEpisodeCard(episode) {
   const episodeCard = template.content.cloneNode(true);
 
   const episodeTitle = episodeCard.querySelector("h2 a");
-  episodeTitle.textContent = `${episode.name} - S${episode.season}E${episode.number}`;
+  episodeTitle.textContent = `${episode.name} - S${pad(episode.season)}E${pad(episode.number)}`;
   episodeTitle.href = `${episode.url}`;
 
   const episodeImage = episodeCard.querySelector("img");
