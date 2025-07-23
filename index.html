@@ -2,6 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="description" content="TV Show Project by Halyna (halyna-k)" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>TV Show Project | Halyna (halyna-k)</title>
     <link href="style.css" rel="stylesheet" />
@@ -10,6 +11,13 @@
 
   <body>
     <div id="root">
+      <template id="episode-card-template">
+        <article>
+          <h2><a href="">Episode title</a></h2>
+          <img src="" alt="">
+          <p data-summary>Summary</p>
+        </article>
+      </template>
     </div>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
