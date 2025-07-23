@@ -19,11 +19,30 @@ function createMain() {
   mainElem.innerHTML = "";
 }
 
+// Creates the episode container and returns it
+function createEpisodeContainer() {
+  const mainElem = document.querySelector("main");
+  let container = mainElem.querySelector(".episode-container");
+
+  if (!container) {
+    container = document.createElement("section");
+    container.className = "episode-container";
+    mainElem.appendChild(container);
+  } else {
+    container.innerHTML = "";
+  }
+
+  return container;
+}
+
 function makePageForEpisodes(episodeList) {
   const mainElem = document.querySelector("main");
   const countText = document.createElement("p");
   countText.textContent = `Got ${episodeList.length} episode(s)`;
   mainElem.prepend(countText);
+
+  const episodeContainer = createEpisodeContainer();
+  // render episode cards inside the episode container
 }
 
 window.onload = setup;
