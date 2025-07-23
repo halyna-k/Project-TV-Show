@@ -76,8 +76,11 @@ function footer() {
 
 function makePageForEpisodes(episodeList) {
   const mainElem = document.querySelector("main");
-  const countText = document.createElement("p");
-  countText.textContent = `Got ${episodeList.length} episode(s)`;
+  const countText = document.createElement("h1");
+  countText.textContent =
+    episodeList.length === 0
+      ? "No episodes found"
+      : `Now is available ${episodeList.length} TV shows`;
   mainElem.prepend(countText);
 
   const episodeContainer = createEpisodeContainer();

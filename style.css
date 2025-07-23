@@ -2,8 +2,8 @@
   --padding: 1rem;
   --margin: 1.5rem;
   --border-radius: 12px;
-  --main-bg-color: #ececec;
-  --bg-color: #f5f5f5;
+  --main-bg-color: #dddede;
+  --bg-color: #f6f4f4;
   --text-color: #0a0a0a;
   --accent-color: #3C948B;
   --accent-hover-color: #347f78;
@@ -21,6 +21,7 @@ body {
   line-height: 1.4;
   scroll-behavior: smooth;
   color: var(--text-color);
+  background: var(--main-bg-color);
 }
 h1 {
   font-size: 2rem;
@@ -54,7 +55,7 @@ article {
   padding: var(--padding);
   text-align: center;
   border-radius: var(--border-radius);
-  background: var(--main-bg-color);
+  background: var(--bg-color);
   box-shadow: var(--shadow);
 }
 article > h2 {
@@ -66,7 +67,7 @@ article > h2 {
   font-size: 1.5rem;
   border: 1px solid var(--accent-color);
   border-radius: var(--border-radius);
-  background: var(--main-bg-color);
+  background: var(--bg-color);
   box-shadow: var(--shadow);
 }
 article h2 a, footer a {
@@ -94,7 +95,7 @@ footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: var(--bg-color);
+  background: var(--main-bg-color);
   opacity: 0.85;
   box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
 }
