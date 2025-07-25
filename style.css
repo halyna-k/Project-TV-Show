@@ -23,9 +23,9 @@ body {
   color: var(--text-color);
   background: var(--main-bg-color);
 }
-h1 {
-  font-size: 2rem;
-  margin-bottom: var(--margin);
+h3 {
+  font-size: 18px;
+  padding: inherit;
 }
 a {
   color: var(--accent-color);
@@ -103,6 +103,27 @@ footer a {
   opacity: 1;
   color: var(--accent-color);
 }
+
+nav {
+  width: 100%;
+  left: 0;
+  top: 0;
+  padding: calc(var(--padding) / 2) var(--padding);
+  display: flex;
+  justify-content: flex-start;
+  align-items: left;
+  background: var(--main-bg-color);
+  opacity: 0.75;
+  box-shadow: 0 -2px 5px rgba(0,0,0,0.1);
+}
+#input-search, #select-search {
+  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+  font-size: 18px; 
+  font-weight: normal;
+  padding-left: 50px;
+  margin-left: 40px;
+}
+
 
 @media screen and (min-width: 800px) {
   :root {
