@@ -1,8 +1,17 @@
-//You can edit ALL of the code here
+// create state
+const state = {
+  allEpisodes: [],
+  filterEpisodes: [], 
+  selectSearch : null,
+  inputSearch: "",
+};
+
 function setup() {
-  const allEpisodes = getAllEpisodes();
+  state.allEpisodes = getAllEpisodes();
+  state.filterEpisodes = state.allEpisodes;
   createMain();
-  makePageForEpisodes(allEpisodes);
+  //makePageForEpisodes(allEpisodes); replaced by render
+  render();
   footer();
   createNav();
 }
@@ -44,7 +53,7 @@ const pad = (n) => {
 // Template for episode cards
 const template = document.getElementById("episode-card-template");
 // Function to create the episode card
-function createEpisodeCard(episode) {
+function createEpisodeCard(episode) { // It will be this the render function?
   const episodeCard = template.content.cloneNode(true);
 
   const episodeTitle = episodeCard.querySelector("h2 a");
@@ -72,21 +81,28 @@ function footer() {
   rootElem.appendChild(footerElem);
 }
 
-function makePageForEpisodes(episodeList) {
+function render() {
   const mainElem = document.querySelector("main");
-    //countText where here
   const episodeContainer = createEpisodeContainer();
-  episodeContainer.append(...episodeList.map(createEpisodeCard));
+  // clear existing cards
+  episodeContainer.innerHTML = "";
+  episodeContainer.append(...state.filterEpisodes.map(createEpisodeCard));
+  // updating counter
+  const counter = document.getElementById("counter-episodes");
+  if (counter) {
+    counter.textContent = counterElements(state.allEpisodes,state.filterEpisodes);
+  }
 }
-//  *********    E M I L I A N O code from here
+
 function createNav() {
   const navElem = document.querySelector("nav");
-  const allEpisodes = getAllEpisodes();
+  ///const allEpisodes = getAllEpisodes();
   // create select element
   let selectSearch = document.createElement("select");
   selectSearch.name = "select-search";
   selectSearch.id = "select-search";
-  listEpisodesToSelect(selectSearch,allEpisodes);
+  state.selectSearch = "selectSearch"; // added to save the reference on the state
+  listEpisodesToSelect(selectSearch,state.allEpisodes);
   navElem.appendChild(selectSearch);
   selectSearch.addEventListener("change",searchByList); // event select
   //create search input
@@ -99,7 +115,7 @@ function createNav() {
   //create counter elements
   const countText = document.createElement("h3");
   countText.id = "counter-episodes";
-  countText.textContent = counterElements(allEpisodes,allEpisodes);
+  countText.textContent = counterElements(state.allEpisodes,state.filterEpisodes);
   navElem.appendChild(countText);
 }
 // element counter
@@ -127,33 +143,31 @@ function listEpisodesToSelect(selectSearch,allEpisodes){
   listEpisodes.forEach((option) => selectSearch.appendChild(option)); 
 }
 
-//function after update list to filter
+//function after update select list to filter
 function searchByList(){
   const episodeId = Number(document.getElementById("select-search").value);
-  const allEpisodes = getAllEpisodes();
-  let episodeTarget = allEpisodes;
   if (!episodeId){
-      makePageForEpisodes(allEpisodes);
+      state.filterEpisodes = state.allEpisodes;
     } else {
-      episodeTarget = allEpisodes.filter( (ep) => ep.id === episodeId);
-      makePageForEpisodes(episodeTarget);  
-    }
-  //update counter episodes
-  let countText = document.getElementById("counter-episodes");
-  countText.textContent = counterElements(allEpisodes,episodeTarget);
+      state.filterEpisodes = state.allEpisodes.filter( (ep) => ep.id === episodeId);
+  }
+  render();
 }
 // function after update input-search
 function searchByInput(){
-  const textSearched = document.getElementById("input-search").value;
-  const allEpisodes = getAllEpisodes();
-  const episodesResult = allEpisodes.filter((ep) => 
-      ep.name.toLowerCase().includes(textSearched) || ep.summary.toLowerCase().includes(textSearched)
-  );/// 
-  makePageForEpisodes(episodesResult);
-  // update counter episodes
-  let countText = document.getElementById("counter-episodes");
-  countText.textContent = counterElements(allEpisodes,episodesResult);
+  const query = document.getElementById("input-search").value;
+  //const allEpisodes = getAllEpisodes();/** */
+  state.filterEpisodes = state.allEpisodes.filter((ep) => 
+      ep.name.toLowerCase().includes(query) || ep.summary.toLowerCase().includes(query)
+); 
+  render();
 }
 
-
 window.onload = setup;
+
+
+//create render
+  // clean
+  // filter
+  // build
+
