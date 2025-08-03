@@ -1,9 +1,18 @@
-//You can edit ALL of the code here
+// create state
+const state = {
+  allEpisodes: [],
+  filterEpisodes: [], 
+  selectSearch : null,
+  inputSearch: "",
+};
+
 function setup() {
-  const allEpisodes = getAllEpisodes();
+  state.allEpisodes = getAllEpisodes();
+  state.filterEpisodes = state.allEpisodes;
   createMain();
-  makePageForEpisodes(allEpisodes);
+  render();
   footer();
+  createNav();
 }
 
 // Creates the main element and appends it to the root element
@@ -35,18 +44,15 @@ function createEpisodeContainer() {
 
   return container;
 }
-
 // Function to pad numbers with leading zeros
 const pad = (n) => {
   if (typeof n !== "number" || isNaN(n)) return "00";
   return n.toString().padStart(2, "0");
 };
-
 // Template for episode cards
 const template = document.getElementById("episode-card-template");
-
 // Function to create the episode card
-function createEpisodeCard(episode) {
+function createEpisodeCard(episode) { 
   const episodeCard = template.content.cloneNode(true);
 
   const episodeTitle = episodeCard.querySelector("h2 a");
@@ -74,17 +80,85 @@ function footer() {
   rootElem.appendChild(footerElem);
 }
 
-function makePageForEpisodes(episodeList) {
+function render() {
   const mainElem = document.querySelector("main");
-  const countText = document.createElement("h1");
-  countText.textContent =
-    episodeList.length === 0
-      ? "No episodes found"
-      : `Now is available ${episodeList.length} TV shows`;
-  mainElem.prepend(countText);
-
   const episodeContainer = createEpisodeContainer();
-  episodeContainer.append(...episodeList.map(createEpisodeCard));
+  // clear existing cards
+  episodeContainer.innerHTML = "";
+  episodeContainer.append(...state.filterEpisodes.map(createEpisodeCard));
+  // updating counter
+  const counter = document.getElementById("counter-episodes");
+  if (counter) {
+    counter.textContent = counterElements(state.allEpisodes,state.filterEpisodes);
+  }
+}
+
+function createNav() {
+  const navElem = document.querySelector("div");
+  // create select element
+  let selectSearch = document.createElement("select");
+  selectSearch.name = "select-search";
+  selectSearch.id = "select-search";
+  state.selectSearch = selectSearch; // added to save the reference on the state
+  listEpisodesToSelect(selectSearch,state.allEpisodes);
+  navElem.appendChild(selectSearch);
+  selectSearch.addEventListener("change",searchByList); // event select
+  //create search input
+  let inputSearch = document.createElement("input");
+  inputSearch.id = "input-search";
+  inputSearch.type = 'text';
+  inputSearch.placeholder = "Search episodes... "
+  navElem.appendChild(inputSearch);
+  inputSearch.addEventListener("keyup",searchByInput); // event input
+  //create counter elements
+  const countText = document.createElement("h3");
+  countText.id = "counter-episodes";
+  countText.textContent = counterElements(state.allEpisodes,state.filterEpisodes);
+  navElem.appendChild(countText);
+}
+// element counter
+function counterElements(allEpisodes,filterEpisodes){
+  let countText = "";
+  const numAllEpisodes = allEpisodes.length
+  const numFilterEpisodes = filterEpisodes.length
+  countText = `Displaying ${numFilterEpisodes} / ${numAllEpisodes} episodes`;
+  return countText;
+}
+// this function create the list of episodes for the select option.
+function listEpisodesToSelect(selectSearch,allEpisodes){
+    // add value to show all episodes
+  const optionAll = document.createElement("option");
+  optionAll.value = '*'
+  optionAll.textContent = "Show All"
+  selectSearch.appendChild(optionAll);
+
+  let listEpisodes = allEpisodes.map((episode) => {
+    const option = document.createElement("option");
+    option.value = episode.id;
+    option.textContent = `S${pad(episode.season)}E${pad(episode.number)} - ${episode.name}`;
+    return option;
+  });
+  listEpisodes.forEach((option) => selectSearch.appendChild(option)); 
+}
+
+//function after update select list to filter
+function searchByList(){
+  const episodeId = Number(document.getElementById("select-search").value);
+  if (!episodeId){
+      state.filterEpisodes = state.allEpisodes;
+    } else {
+      state.filterEpisodes = state.allEpisodes.filter( (ep) => ep.id === episodeId);
+  }
+  render();
+}
+// function after update input-search
+function searchByInput(){
+  const query = document.getElementById("input-search").value;
+  state.filterEpisodes = state.allEpisodes.filter((ep) => 
+      ep.name.toLowerCase().includes(query) || ep.summary.toLowerCase().includes(query)
+); 
+  render();
 }
 
 window.onload = setup;
+
