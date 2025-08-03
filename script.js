@@ -10,7 +10,6 @@ function setup() {
   state.allEpisodes = getAllEpisodes();
   state.filterEpisodes = state.allEpisodes;
   createMain();
-  //makePageForEpisodes(allEpisodes); replaced by render
   render();
   footer();
   createNav();
@@ -53,7 +52,7 @@ const pad = (n) => {
 // Template for episode cards
 const template = document.getElementById("episode-card-template");
 // Function to create the episode card
-function createEpisodeCard(episode) { // It will be this the render function?
+function createEpisodeCard(episode) { 
   const episodeCard = template.content.cloneNode(true);
 
   const episodeTitle = episodeCard.querySelector("h2 a");
@@ -96,12 +95,11 @@ function render() {
 
 function createNav() {
   const navElem = document.querySelector("nav");
-  ///const allEpisodes = getAllEpisodes();
   // create select element
   let selectSearch = document.createElement("select");
   selectSearch.name = "select-search";
   selectSearch.id = "select-search";
-  state.selectSearch = "selectSearch"; // added to save the reference on the state
+  state.selectSearch = selectSearch; // added to save the reference on the state
   listEpisodesToSelect(selectSearch,state.allEpisodes);
   navElem.appendChild(selectSearch);
   selectSearch.addEventListener("change",searchByList); // event select
@@ -134,7 +132,7 @@ function listEpisodesToSelect(selectSearch,allEpisodes){
   optionAll.textContent = "Show All"
   selectSearch.appendChild(optionAll);
 
-  listEpisodes = allEpisodes.map((episode) => {
+  let listEpisodes = allEpisodes.map((episode) => {
     const option = document.createElement("option");
     option.value = episode.id;
     option.textContent = `S${pad(episode.season)}E${pad(episode.number)} - ${episode.name}`;
@@ -156,7 +154,6 @@ function searchByList(){
 // function after update input-search
 function searchByInput(){
   const query = document.getElementById("input-search").value;
-  //const allEpisodes = getAllEpisodes();/** */
   state.filterEpisodes = state.allEpisodes.filter((ep) => 
       ep.name.toLowerCase().includes(query) || ep.summary.toLowerCase().includes(query)
 ); 
@@ -164,10 +161,4 @@ function searchByInput(){
 }
 
 window.onload = setup;
-
-
-//create render
-  // clean
-  // filter
-  // build
 
