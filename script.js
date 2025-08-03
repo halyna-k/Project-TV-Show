@@ -94,7 +94,7 @@ function render() {
 }
 
 function createNav() {
-  const navElem = document.querySelector("nav");
+  const navElem = document.querySelector("div");
   // create select element
   let selectSearch = document.createElement("select");
   selectSearch.name = "select-search";

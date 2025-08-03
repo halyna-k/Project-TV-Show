@@ -25,7 +25,7 @@ body {
 }
 h3 {
   font-size: 1.125rem; /* 18 px @ 16 px root */
-  /*padding: inherit;*/
+  margin-left: 1rem;
 }
 a {
   color: var(--accent-color);
@@ -104,7 +104,7 @@ footer a {
   color: var(--accent-color);
 }
 
-nav {
+#searchBar {
   width: 100%;
   position:fixed;
   padding: calc(var(--padding) / 2) var(--padding);
