@@ -20,12 +20,12 @@ body {
   font-weight: normal;
   line-height: 1.4;
   scroll-behavior: smooth;
+  overflow-x: hidden;
   color: var(--text-color);
   background: var(--main-bg-color);
 }
-h3 {
+h1 {
   font-size: 1.125rem; /* 18 px @ 16 px root */
-  margin-left: 1rem;
 }
 a {
   color: var(--accent-color);
@@ -41,14 +41,48 @@ a:hover {
   padding: var(--padding);
   padding-bottom: 4rem;
 }
+#search-bar {
+  max-width: 100%;
+  padding: var(--padding);
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 30px;
+}
+#select-search {
+  max-width: 300px;
+  /* Optional: remove default arrow */
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='10' viewBox='0 0 24 24' width='10' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  background-size: 20px;
+  padding-right: 30px; /* leave space for arrow */
+  cursor: pointer;
+  font-size: 0.875rem;
+}
+#select-search, #input-search {
+  padding: 15px;
+  font-size: 1.25rem;
+  line-height: 1.2;
+  border: 1px solid rgb(101, 100, 100);
+  border-radius: 8px;
+  background-color:var(--bg-color);
+}
+#input-search {
+  width: 300px;
+}
 .episode-container {
+  padding: 0 var(--padding) calc(var(--padding) * 2) var(--padding);
   display: grid;
   justify-items: center;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 1rem;
 }
 article {
-  max-width: 600px;
+  /* max-width: 600px; */
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
@@ -57,6 +91,7 @@ article {
   border-radius: var(--border-radius);
   background: var(--bg-color);
   box-shadow: var(--shadow);
+  box-sizing: border-box;
 }
 article > h2 {
   height: 9rem;
@@ -75,7 +110,7 @@ article h2 a, footer a {
 }
 article img {
   width: 100%;
-  height: auto;
+  height:max-content;
   border-radius: calc(var(--border-radius) / 2);
   box-shadow: var(--shadow);
 }
@@ -104,34 +139,26 @@ footer a {
   color: var(--accent-color);
 }
 
-#searchBar {
-  width: 100%;
-  position:fixed;
-  padding: calc(var(--padding) / 2) var(--padding);
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
-  background: var(--main-bg-color);
-  opacity: 0.75;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-#input-search, #select-search {
-  font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-  font-size: 18px; 
-  font-weight: normal;
-  padding-left: 3.125rem;
-  margin-left: 2.5rem;
-}
-
-
 @media screen and (min-width: 800px) {
   :root {
     --padding: 30px;
     --margin: 30px;
     --border-radius: 16px;
   }
+  h1 {
+    font-size: 1.5rem;
+  }
   .container {
     max-width: 1200px;
+  }
+  .search-bar {
+    padding: calc(var(--padding) * 2) var(--padding);
+  }
+  #select-search {
+    max-width: 400px;
+  }
+  #input-search {
+    width: 400px;
   }
   .episode-container {
     gap: 2rem;
