@@ -10,17 +10,22 @@
   </head>
 
   <body>
-    <div id="searchBar">
-    </div>
     <div id="root">
-      <template id="episode-card-template">
-        <article>
-          <h2><a href="">Episode title</a></h2>
-          <img src="" alt="">
-          <p data-summary>Summary</p>
-        </article>
-      </template>
+      <main id="container">
+        <div id="search-bar"></div>
+      </main>
+      <footer>
+        <p>Created by <a href="https://github.com/halyna-k" target="_blank" rel="noopener noreferrer">Halyna</a></p>
+        <p>Data originally from <a href="https://tvmaze.com/" target="_blank" rel="noopener noreferrer">TVMaze.com</a></p>
+      </footer>
     </div>
+    <template id="episode-card-template">
+      <article>
+        <h2><a href=""  target="_blank" rel="noopener noreferrer">Episode title</a></h2>
+        <img src="" alt="">
+        <p data-summary>Summary</p>
+      </article>
+    </template>
 
     <!-- Loads a provided function called getAllEpisodes() which returns all episodes -->
     <script src="episodes.js"></script>
