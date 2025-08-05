@@ -102,7 +102,14 @@ function render() {
   const episodeContainer = createEpisodeContainer();
   const filteredEpisodes = getFilteredEpisodes();
 
-  episodeContainer.append(...filteredEpisodes.map(createEpisodeCard));
+  episodeContainer.innerHTML = "";
+
+  if (filteredEpisodes.length === 0) {
+    showWarning("No episodes found. Please try a different search request.");
+  } else {
+    clearStatusMessage();
+    episodeContainer.append(...filteredEpisodes.map(createEpisodeCard));
+  }
 
   const counter = document.getElementById("counter-episodes");
   if (counter) {
@@ -143,16 +150,19 @@ function searchBar() {
   searchElem.appendChild(countText);
 }
 
+// Display a loading message while episodes are being fetched
 function showLoading() {
   statusMsg.classList.add("status-message");
   statusMsg.textContent = "Loading episodes...";
 }
 
-function showError(message) {
+// Show a warning or error message (e.g., no results found)
+function showWarning(message) {
   statusMsg.textContent = message;
   statusMsg.classList.add("error");
 }
 
+// Clear any displayed status message and remove error styling
 function clearStatusMessage() {
   if (statusMsg) {
     statusMsg.textContent = "";
@@ -172,7 +182,7 @@ function setup() {
       render();
     })
     .catch(() => {
-      showError("Something went wrong. Could not load episodes. Please try again later.");
+      showWarning("Something went wrong. Could not load episodes. Please try again later.");
     });
 }
 
