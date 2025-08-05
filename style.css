@@ -138,6 +138,17 @@ footer a {
   opacity: 1;
   color: var(--accent-color);
 }
+.status-message {
+  margin: 0;
+  padding: 0;
+  text-align: center;
+  font-size: 1.5rem;
+  color: #555;
+ }
+
+.status-message.error {
+  color: red;
+}
 
 @media screen and (min-width: 800px) {
   :root {
