@@ -7,7 +7,16 @@ const state = {
 const rootElem = document.getElementById("root");
 const mainElem = document.querySelector("main");
 const template = document.getElementById("episode-card-template");
-const searchElem = document.getElementById("search-bar");
+let searchElem = document.getElementById("search-bar");
+let statusMsg = document.getElementById("status-message");
+
+const endpoint = "https://api.tvmaze.com/shows/82/episodes";
+
+const fetchAllEpisodes = async () => {
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error("Network error");
+  return await response.json();
+};
 
 // Pads numbers with leading zeros
 const pad = (n) => (typeof n === "number" ? String(n).padStart(2, "0") : "00");
@@ -47,6 +56,7 @@ function createEpisodeContainer() {
   let container = mainElem.querySelector(".episode-container");
   if (!container) {
     container = document.createElement("section");
+    container.id = "episode-container";
     container.className = "episode-container";
     mainElem.appendChild(container);
   } else {
@@ -133,11 +143,37 @@ function searchBar() {
   searchElem.appendChild(countText);
 }
 
+function showLoading() {
+  statusMsg.classList.add("status-message");
+  statusMsg.textContent = "Loading episodes...";
+}
+
+function showError(message) {
+  statusMsg.textContent = message;
+  statusMsg.classList.add("error");
+}
+
+function clearStatusMessage() {
+  if (statusMsg) {
+    statusMsg.textContent = "";
+    statusMsg.classList.remove("error");
+  }
+}
+
 // App setup
 function setup() {
-  state.allEpisodes = getAllEpisodes();
-  searchBar();
-  render();
+  showLoading();
+
+  fetchAllEpisodes()
+    .then((episodes) => {
+      state.allEpisodes = episodes;
+      clearStatusMessage();
+      searchBar();
+      render();
+    })
+    .catch(() => {
+      showError("Something went wrong. Could not load episodes. Please try again later.");
+    });
 }
 
 window.onload = setup;
