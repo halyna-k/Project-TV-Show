@@ -143,11 +143,11 @@ footer a {
   padding: 0;
   text-align: center;
   font-size: 1.5rem;
-  color: #555;
+  color: var(--accent-hover-color);
  }
 
 .status-message.error {
-  color: red;
+  color: var(--accent-color);
 }
 
 @media screen and (min-width: 800px) {
