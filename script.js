@@ -3,6 +3,11 @@ const state = {
   selectSearch: null,
   inputSearch: "",
 };
+const  stateShows = {
+  shows:[],
+  selectShow: null,
+};
+const episodesCache = {}; // key: show ID → value: episodes
 
 const rootElem = document.getElementById("root");
 const mainElem = document.querySelector("main");
@@ -10,13 +15,27 @@ const template = document.getElementById("episode-card-template");
 let searchElem = document.getElementById("search-bar");
 let statusMsg = document.getElementById("status-message");
 
-const endpoint = "https://api.tvmaze.com/shows/82/episodes";
+const sourceShows = "https://api.tvmaze.com/shows"
 
-const fetchAllEpisodes = async () => {
-  const response = await fetch(endpoint);
-  if (!response.ok) throw new Error("Network error");
-  return await response.json();
-};
+function fetchShows() {
+  return fetch(sourceShows).then(function (data) {
+    return data.json();
+  });
+}
+////Load episodes from depending of show selected.
+async function loadEpisodesForShow(showId) {
+  if (episodesCache[showId]) {
+    return episodesCache[showId]; // Return cached
+  }
+  const url = `https://api.tvmaze.com/shows/${showId}/episodes`;
+  const response = await fetch(url);  
+  if (!response.ok) throw new Error("Failed to load episodes");
+
+  const episodes = await response.json();
+  episodesCache[showId] = episodes; // Cache it
+  return episodes;
+}
+
 
 // Pads numbers with leading zeros
 const pad = (n) => (typeof n === "number" ? String(n).padStart(2, "0") : "00");
@@ -86,7 +105,7 @@ function createEpisodeCard(episode) {
 function listEpisodesToSelect(selectElem, allEpisodes) {
   const optionAll = document.createElement("option");
   optionAll.value = "*";
-  optionAll.textContent = "Show All";
+  optionAll.textContent = "Select an episode...";
   selectElem.appendChild(optionAll);
 
   allEpisodes.forEach((ep) => {
@@ -94,6 +113,21 @@ function listEpisodesToSelect(selectElem, allEpisodes) {
     option.value = ep.id;
     option.textContent = `S${pad(ep.season)}E${pad(ep.number)} - ${ep.name}`;
     selectElem.appendChild(option);
+  });
+}
+
+// fill selector with shows
+function listShowsToSelect(selectShow, allShows){
+  const optionAll = document.createElement("option");
+  optionAll.value = "*";
+  optionAll.textContent = "Select a show...";
+  selectShow.appendChild(optionAll);
+
+  allShows.forEach((shw) => {
+    const option = document.createElement("option");
+    option.value = shw.id;
+    option.textContent = shw.name;
+    selectShow.appendChild(option);
   });
 }
 
@@ -129,8 +163,24 @@ function searchBar() {
     state.inputSearch = ""; // optional reset
     render();
   })
-  searchElem.appendChild(selectSearch);
 
+  // Create select show
+  const selectShow = document.createElement("select");
+  selectShow.name = "select-show";
+  selectShow.id = "select-show";
+  stateShows.selectShow = selectShow;
+  listShowsToSelect(selectShow,stateShows.shows);
+  searchElem.appendChild(selectShow);
+    // event on show selection /** */
+  selectShow.addEventListener("change", async () => {
+    const selectedShowId = selectShow.value;
+    const episodes = await loadEpisodesForShow(selectedShowId);
+    state.allEpisodes = episodes;
+    selectSearch.innerHTML = "";
+    listEpisodesToSelect(selectSearch, state.allEpisodes);
+  render();
+  });
+  searchElem.appendChild(selectSearch);
   // Create input
   const inputSearch = document.createElement("input");
   inputSearch.id = "input-search";
@@ -173,12 +223,18 @@ function clearStatusMessage() {
 // App setup
 function setup() {
   showLoading();
-
-  fetchAllEpisodes()
-    .then((episodes) => {
-      state.allEpisodes = episodes;
+  // Fetch both shows and episodes
+  const defaultShowId = "82";
+  Promise.all([
+  fetchShows(),
+  loadEpisodesForShow(defaultShowId)
+  ])
+  .then(([loadShows,episodes]) => {
+    stateShows.shows = loadShows;
+    state.allEpisodes = episodes;
       clearStatusMessage();
       searchBar();
+      stateShows.selectShow.value = defaultShowId;
       render();
     })
     .catch(() => {
