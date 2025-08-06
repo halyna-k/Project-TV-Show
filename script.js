@@ -123,7 +123,10 @@ function listShowsToSelect(selectShow, allShows){
   optionAll.textContent = "Select a show...";
   selectShow.appendChild(optionAll);
 
-  allShows.forEach((shw) => {
+  allShows
+  .slice() 
+  .sort((a, b) => a.name.localeCompare(b.name, undefined, { sensitivity: 'base' }))
+  .forEach((shw) => {
     const option = document.createElement("option");
     option.value = shw.id;
     option.textContent = shw.name;
