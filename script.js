@@ -187,49 +187,55 @@ function setupSearchBar() {
   inputSearch.placeholder = "Search episodes...";
   searchElem.appendChild(inputSearch);
 
-  // Populate shows in select
-  selectShow.addEventListener("change", async () => {
-    const showId = selectShow.value;
-    setLoading(true, "Loading episodes...");
-
-    const episodeContainer = mainElem.querySelector(".episode-container");
-    if (episodeContainer) clearElement(episodeContainer);
-
-    await loadEpisodesForShow(showId)
-      .then((episodes) => {
-        state.allEpisodes = episodes;
-        inputSearch.value = "";
-        state.inputSearch = "";
-        populateEpisodesSelect(state.selectEpisode, episodes);
-        setWarning(false);
-        setLoading(false);
-        renderEpisodes();
-      })
-      .catch((error) => {
-        console.error("Error loading episodes:", error);
-        setLoading(false);
-        setWarning(true, "Failed to load episodes. Try again later.");
-      });
-  });
-
-  // Populate episodes in select
-  selectEpisode.addEventListener("change", () => {
-    state.inputSearch = "";
-    renderEpisodes();
-  })
-
-  // Add event listener for input search
-  inputSearch.addEventListener("input", () => {
-    state.inputSearch = inputSearch.value;
-    state.selectEpisode.value = "*";
-    renderEpisodes();
-  });
+  selectShow.addEventListener("change", handleShowChange);
+  selectEpisode.addEventListener("change", handleEpisodeChange);
+  inputSearch.addEventListener("input", handleSearchInput);
 
   // Counter
   const counter = document.createElement("h1");
   counter.id = "counter-episodes";
   searchElem.appendChild(counter);
 }
+
+// ------ EVENT LISTENERS ------
+// Show dropdown change
+function handleShowChange(event) {
+  const showId = event.target.value;
+  setLoading(true, "Loading episodes...");
+
+  const episodeContainer = mainElem.querySelector(".episode-container");
+  if (episodeContainer) clearElement(episodeContainer);
+
+  loadEpisodesForShow(showId)
+    .then((episodes) => {
+      state.allEpisodes = episodes;
+      state.inputSearch = "";
+      document.getElementById("input-search").value = "";
+      populateEpisodesSelect(state.selectEpisode, episodes);
+      setWarning(false);
+      setLoading(false);
+      renderEpisodes();
+    })
+    .catch((error) => {
+      console.error("Error loading episodes:", error);
+      setLoading(false);
+      setWarning(true, "Failed to load episodes. Try again later.");
+    });
+}
+
+// Episode dropdown change
+function handleEpisodeChange() {
+  state.inputSearch = "";
+  renderEpisodes();
+}
+
+// Search input change
+function handleSearchInput(event) {
+  state.inputSearch = event.target.value;
+  state.selectEpisode.value = "*";
+  renderEpisodes();
+}
+
 
 // ------ STATUS ------
 // Loading status message
