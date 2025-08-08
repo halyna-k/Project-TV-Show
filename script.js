@@ -103,6 +103,12 @@ function createShowCard(show) {
   const showSummary = showCard.querySelector("[data-summary]");
 
   showTitle.textContent = show.name;
+  showTitle.href = "#"; // prevent navigation
+  showTitle.addEventListener("click", (e) => {
+    e.preventDefault();
+    handleShowClick(show.id);
+  });
+
   showImage.src = show.image?.medium || "";
   showImage.alt = show.name;
   showGenres.textContent = show.genres.join(", ");
@@ -262,6 +268,35 @@ function handleShowChange(event) {
     });
 }
 
+// Handles click on show card to load episodes
+function handleShowClick(showId) {
+  setLoading(true, "Loading episodes...");
+
+  loadEpisodesForShow(showId)
+    .then((episodes) => {
+      state.allEpisodes = episodes;
+      state.inputSearch = "";
+
+      // Prepare search bar for episodes
+      setupSearchBar();
+      stateShows.selectShow.value = showId;
+      populateEpisodesSelect(state.selectEpisode, episodes);
+
+      // Hide shows list
+      const showContainer = document.querySelector(".show-container");
+      if (showContainer) showContainer.style.display = "none";
+
+      renderEpisodes();
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.error("Error loading episodes:", error);
+      setWarning(true, "Failed to load episodes. Try again later.");
+      setLoading(false);
+    });
+}
+
+
 // Episode dropdown change
 function handleEpisodeChange() {
   state.inputSearch = "";
@@ -301,26 +336,17 @@ function setup() {
 
   setLoading(true);
 
-  Promise.all([
-  fetchShows(),
-  // loadEpisodesForShow(DEFAULT_SHOW_ID)
-  ])
-  .then(([shows,episodes]) => {
-    stateShows.shows = shows;
-    state.allEpisodes = episodes;
-
-    setWarning(false);
-    setLoading(false);
-
-    // setupSearchBar();
-    // stateShows.selectShow.value = DEFAULT_SHOW_ID;
-    renderShows();
-    // renderEpisodes();
-  })
-  .catch((error) => {
-    console.error("Error during setup:", error);
-    setWarning(true, "Something went wrong. Please try again later.");
-  });
+  fetchShows()
+    .then((shows) => {
+      stateShows.shows = shows;
+      setWarning(false);
+      setLoading(false);
+      renderShows();
+    })
+    .catch((error) => {
+      console.error("Error during setup:", error);
+      setWarning(true, "Something went wrong. Please try again later.");
+    });
 }
 
 window.onload = setup;
