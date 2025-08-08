@@ -50,12 +50,12 @@ const pad = (n) => String(n ?? 0).padStart(2, "0");
 const clearElement = (el) => el && (el.innerHTML = "");
 
 // Creates or clears the episode container
-function createEpisodeContainer() {
-  let container = mainElem.querySelector(".episode-container");
+function createContainer(className, id) {
+  let container = mainElem.querySelector(`.${className}`);
   if (!container) {
     container = document.createElement("section");
-    container.id = "episode-container";
-    container.className = "episode-container";
+    container.id = id;
+    container.className = className;
     mainElem.appendChild(container);
   } else {
     clearElement(container);
@@ -82,7 +82,7 @@ function createEpisodeCard(episode) {
 
 // Renders episodes based on current state
 function renderEpisodes() {
-  const episodeContainer = createEpisodeContainer();
+  const episodeContainer = createContainer("episode-container", "episode-container");
   const filteredEpisodes = getFilteredEpisodes();
 
   clearElement(episodeContainer);
