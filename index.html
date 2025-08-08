@@ -21,10 +21,23 @@
       </footer>
     </div>
     <template id="episode-card-template">
-      <article>
-        <h2><a href=""  target="_blank" rel="noopener noreferrer">Episode title</a></h2>
+      <article class="episode-card">
+        <h2><a href="" target="_blank" rel="noopener noreferrer">Episode title</a></h2>
         <img src="" alt="">
         <p data-summary>Summary</p>
+      </article>
+    </template>
+    <template id="show-card-template">
+      <article class="show-card">
+        <h2 class="show-title"><a href="#" target="_blank" rel="noopener noreferrer">Show Name</a></h2>
+        <img src="" alt="">
+        <p data-summary></p>
+        <aside>
+          <p><strong>Rated:</strong> <span data-rating></span></p>
+          <p><strong>Genres:</strong> <span data-genres></span></p>
+          <p><strong>Status:</strong> <span data-status></span></p>
+          <p><strong>Runtime:</strong> <span data-runtime></span> min</p>
+        </aside>
       </article>
     </template>
 
