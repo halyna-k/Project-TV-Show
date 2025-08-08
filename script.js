@@ -17,7 +17,8 @@ const episodesCache = {};
 // ------ DOM ------
 const rootElem = document.getElementById("root");
 const mainElem = document.querySelector("main");
-const template = document.getElementById("episode-card-template");
+const episodeTemplate = document.getElementById("episode-card-template");
+const showTemplate = document.getElementById("show-card-template");
 let searchElem = document.getElementById("search-bar");
 let statusMsg = document.getElementById("status-message");
 
@@ -65,7 +66,7 @@ function createContainer(className, id) {
 
 // Creates an episode card from the template
 function createEpisodeCard(episode) {
-  const episodeCard = template.content.cloneNode(true);
+  const episodeCard = episodeTemplate.content.cloneNode(true);
   const episodeTitle = episodeCard.querySelector("h2 a");
   episodeTitle.textContent = `${episode.name} - S${pad(episode.season)}E${pad(episode.number)}`;
   episodeTitle.href = episode.url;
@@ -78,6 +79,39 @@ function createEpisodeCard(episode) {
   episodeSummary.innerHTML = (episode.summary || "").replace(/<[^>]+>/g, "");
 
   return episodeCard;
+}
+
+// Creates a select option element
+function createSelectOption(value, label) {
+  const option = document.createElement("option");
+  option.value = value;
+  option.textContent = label;
+  return option;
+}
+
+// Creates a show card from the template
+function createShowCard(show) {
+  const cloneShowCard = showTemplate.content.cloneNode(true);
+  const showCard = cloneShowCard.querySelector("article");
+
+  const showTitle = showCard.querySelector(".show-title a");
+  const showImage = showCard.querySelector("img");
+  const showGenres = showCard.querySelector("[data-genres]");
+  const showStatus = showCard.querySelector("[data-status]");
+  const showRating = showCard.querySelector("[data-rating]");
+  const showRuntime = showCard.querySelector("[data-runtime]");
+  const showSummary = showCard.querySelector("[data-summary]");
+
+  showTitle.textContent = show.name;
+  showImage.src = show.image?.medium || "";
+  showImage.alt = show.name;
+  showGenres.textContent = show.genres.join(", ");
+  showStatus.textContent = show.status;
+  showRating.textContent = show.rating?.average ?? "N/A";
+  showRuntime.textContent = show.runtime ?? "N/A";
+  showSummary.innerHTML = show.summary || "";
+
+  return cloneShowCard;
 }
 
 // Renders episodes based on current state
@@ -100,12 +134,17 @@ function renderEpisodes() {
   }
 }
 
-// Creates a select option element
-function createSelectOption(value, label) {
-  const option = document.createElement("option");
-  option.value = value;
-  option.textContent = label;
-  return option;
+// Renders shows based on current state
+function renderShows() {
+  const showContainer = createContainer("show-container", "show-container");
+  clearElement(showContainer);
+
+  if (stateShows.shows.length === 0) {
+    setWarning(true, "No shows found.");
+  } else {
+    setWarning(false);
+    showContainer.append(...stateShows.shows.map(createShowCard));
+  }
 }
 
 // ------ FILTERING ------
@@ -255,7 +294,7 @@ function setWarning(visible, message) {
 
 // ------ INIT ------
 function setup() {
-  if (!rootElem || !mainElem || !template || !searchElem) {
+  if (!rootElem || !mainElem || !episodeTemplate || !showTemplate || !searchElem) {
     console.error("Required DOM elements are missing");
     return;
   }
@@ -264,7 +303,7 @@ function setup() {
 
   Promise.all([
   fetchShows(),
-  loadEpisodesForShow(DEFAULT_SHOW_ID)
+  // loadEpisodesForShow(DEFAULT_SHOW_ID)
   ])
   .then(([shows,episodes]) => {
     stateShows.shows = shows;
@@ -273,9 +312,10 @@ function setup() {
     setWarning(false);
     setLoading(false);
 
-    setupSearchBar();
-    stateShows.selectShow.value = DEFAULT_SHOW_ID;
-    renderEpisodes();
+    // setupSearchBar();
+    // stateShows.selectShow.value = DEFAULT_SHOW_ID;
+    renderShows();
+    // renderEpisodes();
   })
   .catch((error) => {
     console.error("Error during setup:", error);
