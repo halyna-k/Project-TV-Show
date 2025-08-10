@@ -41,6 +41,19 @@ img {
   border-radius: calc(var(--border-radius) / 2);
   box-shadow: var(--shadow);
 }
+button {
+  padding: 1rem 1.2rem;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: var(--border-radius);
+  background-color: var(--accent-color);
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+button:hover {
+  background-color: var(--accent-hover-color);
+}
 .container {
   max-width: 780px;
   margin: 0 auto;
