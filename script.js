@@ -207,9 +207,16 @@ function populateShowsSelect(select, shows) {
 }
 
 // ------ SEARCH BAR ------
-// Sets up search bar (select + input + counter)
+// Sets up search bar
 function setupSearchBar() {
   clearElement(searchElem);
+
+  // Back button
+  const backBtn = document.createElement("button");
+  backBtn.id = "back-btn";
+  backBtn.textContent = "Back";
+  backBtn.style.display = "none";
+  searchElem.appendChild(backBtn);
 
   // Select show
   const selectShow = document.createElement("select");
@@ -232,6 +239,7 @@ function setupSearchBar() {
   inputSearch.placeholder = "Search episodes...";
   searchElem.appendChild(inputSearch);
 
+  backBtn.addEventListener("click", handleBackBtnClick);
   selectShow.addEventListener("change", handleShowChange);
   selectEpisode.addEventListener("change", handleEpisodeChange);
   inputSearch.addEventListener("input", handleSearchInput);
@@ -278,16 +286,21 @@ function handleShowClick(showId) {
       state.inputSearch = "";
 
       // Prepare search bar for episodes
-      setupSearchBar();
       stateShows.selectShow.value = showId;
       populateEpisodesSelect(state.selectEpisode, episodes);
 
-      // Hide shows list
-      const showContainer = document.querySelector(".show-container");
-      if (showContainer) showContainer.style.display = "none";
+      searchElem.style.display = "flex";
 
+      const backBtn = document.getElementById("back-btn");
+      if (backBtn) backBtn.style.display = "inline-block";
+
+      const episodeContainer = document.getElementById("episode-container")
+      if (episodeContainer) episodeContainer.style.display = "grid";
       renderEpisodes();
+      const showContainer = document.getElementById("show-container");
+      if (showContainer) showContainer.style.display = "none";
       setLoading(false);
+
     })
     .catch((error) => {
       console.error("Error loading episodes:", error);
@@ -296,6 +309,21 @@ function handleShowClick(showId) {
     });
 }
 
+// Back button click
+function handleBackBtnClick() {
+  const episodeContainer = document.querySelector(".episode-container");
+  if (episodeContainer) episodeContainer.style.display = "none";
+
+  searchElem.style.display = "none";
+
+  const showContainer = document.querySelector(".show-container");
+  if (showContainer) showContainer.style.display = "grid";
+  const backBtn = document.getElementById("back-btn");
+  backBtn.style.display = "none";
+
+  setWarning(false);
+  setLoading(false);
+}
 
 // Episode dropdown change
 function handleEpisodeChange() {
@@ -341,6 +369,8 @@ function setup() {
       stateShows.shows = shows;
       setWarning(false);
       setLoading(false);
+      setupSearchBar();
+      searchElem.style.display = "none";
       renderShows();
     })
     .catch((error) => {
